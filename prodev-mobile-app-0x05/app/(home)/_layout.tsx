@@ -35,4 +35,4 @@ const HomeRootLayout = () => {
   );
 };
 
-export default HomeRootLayout;
+export default HomeRootLayout;   
