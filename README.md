@@ -3420,3 +3420,440 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Task 2 2. Styling with NativeWind (TailwindCSS)
+--------------------------------------------------------------------------------------------
+Great, this task is about setting up **NativeWind (TailwindCSS)** with **Expo Router** in your `prodev-mobile-app-0x06` project and styling your `Profile` screen. I’ll give you a **complete working setup** for all required files so your app runs smoothly.
+
+---
+
+### ✅ Folder Structure Recap
+
+Your `prodev-mobile-app-0x06` folder should look like this after setup:
+
+```
+prodev-mobile-app-0x06/
+├── app/
+│   ├── _layout.tsx
+│   └── (home)/
+│       └── profile.tsx
+├── styles/
+│   └── global.css
+├── tailwind.config.js
+├── nativewind-env.d.ts
+├── metro.config.js
+├── babel.config.js
+└── package.json
+```
+
+---
+
+### 🔹 1. Install Dependencies
+
+Run:
+
+```bash
+npm install nativewind tailwindcss
+npx tailwindcss init
+```
+
+---
+
+### 🔹 2. `tailwind.config.js`
+
+```ts
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,jsx,ts,tsx}",
+    "./components/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+---
+
+### 🔹 3. `nativewind-env.d.ts`
+
+```ts
+/// <reference types="nativewind/types" />
+```
+
+---
+
+### 🔹 4. `metro.config.js`
+
+```ts
+const { getDefaultConfig } = require("expo/metro-config");
+
+const config = getDefaultConfig(__dirname, {
+  isCSSEnabled: true,
+});
+
+module.exports = config;
+```
+
+---
+
+### 🔹 5. `babel.config.js`
+
+```ts
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      require.resolve('expo-router/babel'),
+    ],
+  };
+};
+
+```
+
+---
+
+### 🔹 6. `styles/global.css`
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+---
+
+### 🔹 7. `app/_layout.tsx`
+
+```tsx
+import { AntDesign, EvilIcons, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+
+const HomeRootLayout = () => {
+  return (
+    <Tabs screenOptions={{
+        tabBarActiveTintColor: '#34967C',
+        headerShown: false
+    }}>
+      <Tabs.Screen name="index" options={{
+        title: 'Home',
+        tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
+      }} />
+      <Tabs.Screen name="search" options={{
+        title: 'Search',
+        headerShown: true,
+        tabBarIcon: ({ color }) => <Feather name="search" size={24} color={color} />,
+      }} />
+      <Tabs.Screen name="saved" options={{
+        title: 'Saved',
+        headerShown: true,
+        tabBarIcon: ({ color }) => <EvilIcons name="heart" size={27} color={color} />
+      }} />
+      <Tabs.Screen name="inbox" options={{
+        title: 'Inbox',
+        headerShown: true,
+        tabBarIcon: ({ color }) => <Ionicons name="chatbubbles-outline" size={24} color={color} />
+      }} />
+      <Tabs.Screen name="profile" options={{
+        title: 'Profile',
+        tabBarIcon: ({ color }) => <FontAwesome name="user-o" size={24} color={color} />
+      }} />
+    </Tabs>
+  );
+};
+
+export default HomeRootLayout;
+```
+
+---
+
+### 🔹 8. `app/(home)/profile.tsx`
+
+```tsx
+import { View, Text, Image, Pressable } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+const Profile = () => {
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 p-4">
+        <Text className="text-black text-4xl font-normal mb-6">Profile</Text>
+        <View className="bg-[#34967C] h-[90px] mb-10 flex-row items-center rounded-md justify-between px-7">
+          <View className="flex-row items-center gap-4">
+            <Image source={require("@/assets/images/user-image.png")} />
+            <View>
+              <Text className="font-semibold text-xl text-white">Cole Baidoo</Text>
+              <Text className="text-sm font-thin text-white">@block_cs</Text>
+            </View>
+          </View>
+          <Feather name="edit-3" size={24} color="white" />
+        </View>
+
+        <View className="h-[350px] gap-3 bg-white rounded-md p-4 mb-4">
+          <ProfileItem
+            title="My Account"
+            subtitle="Make Changes to your account"
+            icon={<FontAwesome6 name="user" size={24} color="#0601B4" />}
+          />
+          <ProfileItem
+            title="Saved Beneficiary"
+            subtitle="Manage your saved accounts"
+            icon={<FontAwesome6 name="user" size={24} color="#0601B4" />}
+          />
+          <ProfileItem
+            title="Face ID / Touch ID"
+            subtitle="Make Changes to your account"
+            icon={<Ionicons name="lock-closed-outline" size={24} color="#0601B4" />}
+          />
+          <ProfileItem
+            title="Two-Factor Authentication"
+            subtitle="Further secure your account for safety"
+            icon={<Ionicons name="shield-checkmark-outline" size={24} color="#0601B4" />}
+          />
+          <ProfileItem
+            title="Log out"
+            subtitle="Further secure your account for safety"
+            icon={<MaterialIcons name="logout" size={24} color="#0601B4" />}
+          />
+        </View>
+
+        <Text className="text-black text-xl font-normal mb-6">More</Text>
+        <View className="h-[139px] gap-3 bg-white rounded-md p-4 mb-4">
+          <ProfileItem
+            title="My Account"
+            subtitle="Make Changes to your account"
+            icon={<FontAwesome6 name="user" size={24} color="#0601B4" />}
+          />
+          <ProfileItem
+            title="Saved Beneficiary"
+            subtitle="Manage your saved accounts"
+            icon={<FontAwesome6 name="user" size={24} color="#0601B4" />}
+          />
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+};
+
+const ProfileItem = ({ title, subtitle, icon }: any) => (
+  <Pressable className="flex-row items-center justify-between mb-2">
+    <View className="flex-row items-center gap-4">
+      <View className="w-12 h-12 bg-[#0601B4]/10 items-center justify-center rounded-full">
+        {icon}
+      </View>
+      <View>
+        <Text className="text-lg font-semibold mb-2">{title}</Text>
+        <Text className="font-thin text-gray-700">{subtitle}</Text>
+      </View>
+    </View>
+    <MaterialIcons name="keyboard-arrow-right" size={34} color="black" />
+  </Pressable>
+);
+
+export default Profile;
+```
+
+---
+
+### 🔹 9. Run Your App
+
+```bash
+npx expo start
+```
+
+Scan QR code in **Expo Go** app.
+
+---
+
+Would you also like me to give you a **step-by-step guide to move global.css into the `styles` directory** and import it correctly?
+
+
+
+
+
+
+profile 2
+
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+
+export default function ProfileScreen() {
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
+      {/* Header */}
+      <Text style={styles.header}>Profile</Text>
+
+      {/* Profile Card */}
+      <View style={styles.profileCard}>
+        <Image
+          source={{ uri: 'https://i.pravatar.cc/150?img=47' }}
+          style={styles.avatar}
+        />
+        <View style={{ flex: 1 }}>
+          <Text style={styles.name}>Cole Baidoo</Text>
+          <Text style={styles.username}>@block_cs</Text>
+        </View>
+        <TouchableOpacity>
+          <MaterialIcons name="edit" size={22} color="#fff" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Account Options */}
+      <View style={styles.section}>
+        <OptionItem
+          icon="person-outline"
+          label="My Account"
+          subLabel="Make Changes to your account"
+        />
+        <OptionItem
+          icon="bookmark-outline"
+          label="Saved Beneficiary"
+          subLabel="Manage your saved accounts"
+        />
+        <OptionItem
+          icon="lock-closed-outline"
+          label="Face ID / Touch ID"
+          subLabel="Make Changes to your account"
+        />
+        <OptionItem
+          icon="shield-checkmark-outline"
+          label="Two-Factor Authentication"
+          subLabel="Further secure your account for safety"
+        />
+        <OptionItem
+          icon="log-out-outline"
+          label="Log out"
+          subLabel="Further secure your account for safety"
+        />
+      </View>
+
+      {/* More Section */}
+      <Text style={styles.sectionTitle}>More</Text>
+      <View style={styles.section}>
+        <OptionItem
+          icon="notifications-outline"
+          label="Help & Support"
+          subLabel=""
+        />
+        <OptionItem
+          icon="heart-outline"
+          label="About App"
+          subLabel=""
+        />
+      </View>
+    </ScrollView>
+  );
+}
+
+function OptionItem({ icon, label, subLabel }: { icon: any; label: string; subLabel: string }) {
+  return (
+    <TouchableOpacity style={styles.optionRow}>
+      <View style={styles.optionLeft}>
+        <Ionicons name={icon} size={24} color="#5A5AE6" />
+        <View style={{ marginLeft: 10 }}>
+          <Text style={styles.optionLabel}>{label}</Text>
+          {subLabel ? <Text style={styles.optionSub}>{subLabel}</Text> : null}
+        </View>
+      </View>
+      <Ionicons name="chevron-forward" size={20} color="#888" />
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: '600',
+    marginVertical: 20,
+  },
+  profileCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 30,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  username: {
+    fontSize: 14,
+    color: '#e0e0e0',
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  section: {
+    backgroundColor: '#f8f8f8',
+    borderRadius: 12,
+    paddingVertical: 4,
+    marginBottom: 20,
+  },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  optionLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  optionLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  optionSub: {
+    fontSize: 13,
+    color: '#777',
+  },
+});
